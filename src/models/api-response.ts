@@ -2,6 +2,7 @@ import { Response } from 'express';
 
 export enum ResponseStatus {
     SUCCESS = 200,
+    CREATED = 201,
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,
@@ -68,5 +69,11 @@ export class InternalErrorResponse extends ApiResponse {
 export class SuccessResponse extends ApiResponse {
     constructor(message = 'Success', data?: {}) {
         super(ResponseStatus.SUCCESS, message, data);
+    }
+}
+
+export class CreatedResponse extends ApiResponse {
+    constructor(message = 'Created', data?: {}) {
+        super(ResponseStatus.CREATED, message, data);
     }
 }
