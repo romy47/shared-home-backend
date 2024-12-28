@@ -3,14 +3,26 @@ import { authController } from "../controllers/auth";
 import restricted from "../middlewares/auth-middleware";
 import catchAsyncError from "../middlewares/async-error-handler";
 
-const authRrouter: Router = Router();
-authRrouter
-  .route("/")
-  .get(catchAsyncError(restricted), catchAsyncError(authController.test));
+const authRouter: Router = Router();
+authRouter
+  .route("/me")
+  .get(catchAsyncError(restricted), catchAsyncError(authController.getMyProfile));
 
-authRrouter
+  authRouter
   .route("/register")
-  .post(catchAsyncError(authController.register)); //for testing, omitting the user header check, we need user here as well.
+  .post(catchAsyncError(authController.register)); //not passing the middleware, as middlware will create the user.
+
+authRouter
+  .route("/roles")
+  .get(catchAsyncError(restricted), catchAsyncError(authController.getAllRoles))
+  .post(catchAsyncError(restricted), catchAsyncError(authController.createRole));
 
 
-export default authRrouter;
+authRouter
+  .route('/roles/:id')
+  .post(catchAsyncError(restricted), catchAsyncError(authController.updateRole))
+  .delete(catchAsyncError(restricted), catchAsyncError(authController.deleteRole))
+
+
+
+export default authRouter;

@@ -22,6 +22,8 @@ model House {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
+  createdBy User @relation(fields: [created_by], references: [id])
+
   users HouseUser[]
 }
 
@@ -38,6 +40,7 @@ model User {
   updated_at  DateTime  @updatedAt
 
   house_users HouseUser[]
+  houses House[]
 }
 
 model Role {

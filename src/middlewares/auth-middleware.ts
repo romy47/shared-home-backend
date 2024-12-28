@@ -5,6 +5,7 @@ import { firebaseAuth } from "../services/firebase";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const NodeCache = require( "node-cache" );
 
 export default async function restricted(
   req: IRequest,
@@ -18,7 +19,7 @@ export default async function restricted(
   }
 
   const token = authHeader.split(" ")[1] as string;
-
+  // console.log('frotnend token is', token)
   try {
     const decodedToken = await firebaseAuth().verifyIdToken(token);
     // req.user = decodedToken;
