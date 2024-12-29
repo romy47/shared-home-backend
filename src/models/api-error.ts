@@ -10,6 +10,7 @@ export enum ErrorType {
     NOT_FOUND = 'NotFoundError',
     BAD_REQUEST = 'BadRequestError',
     FORBIDDEN = 'ForbiddenError',
+    UNPROCESSABLE_ENTITY = 'UnprocessableEntityError'
 }
 
 export abstract class ApiError extends Error {
@@ -40,6 +41,8 @@ export abstract class ApiError extends Error {
                 return new BadRequestResponse(err.message).send(res);
             case ErrorType.FORBIDDEN:
                 return new ForbiddenResponse(err.message).send(res);
+            case ErrorType.UNPROCESSABLE_ENTITY:
+                return new ForbiddenResponse(err.message).send(res);
             default: {
                 return new InternalErrorResponse(err.message, stackTraceData).send(res);
             }
@@ -62,6 +65,12 @@ export class InternalError extends ApiError {
 export class BadRequestError extends ApiError {
     constructor(message = 'Bad Request') {
         super(ErrorType.BAD_REQUEST, message);
+    }
+}
+
+export class UnprocessableEntityError extends ApiError {
+    constructor(message = 'Unprocessable Entity') {
+        super(ErrorType.UNPROCESSABLE_ENTITY, message);
     }
 }
 

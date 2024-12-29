@@ -8,6 +8,7 @@ export enum ResponseStatus {
     FORBIDDEN = 403,
     NOT_FOUND = 404,
     INTERNAL_ERROR = 500,
+    UNPROCESSABLE_ENTITY=422,
 }
 
 abstract class ApiResponse {
@@ -51,6 +52,12 @@ export class NotFoundResponse extends ApiResponse {
 export class ForbiddenResponse extends ApiResponse {
     constructor(message = 'Forbidden', data?: {}) {
         super(ResponseStatus.FORBIDDEN, message, data);
+    }
+}
+
+export class UnprocessableEntityResponse extends ApiResponse {
+    constructor(message = 'UnprocessableEntity', data?: {}) {
+        super(ResponseStatus.UNPROCESSABLE_ENTITY, message, data);
     }
 }
 

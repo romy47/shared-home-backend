@@ -24,7 +24,7 @@ model House {
 
   createdBy User @relation(fields: [created_by], references: [id])
 
-  users HouseUser[]
+  houseMembers HouseUser[]
 }
 
 model User {
@@ -32,7 +32,7 @@ model User {
   first_name  String?
   last_name   String?
   email       String?
-  auth_id     String? @unique
+  auth_id     String @unique
   birthday    DateTime?
   profile_img String?
   deleted     Boolean?  @default(false)

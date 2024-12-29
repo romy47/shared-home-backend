@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import { BadRequestResponse, CreatedResponse, InternalErrorResponse, NotFoundResponse, SuccessResponse } from "../models/api-response";
+import {  Response, NextFunction } from "express";
+import {  CreatedResponse, SuccessResponse } from "../models/api-response";
 import IRequest from "../models/request";
-import {  PrismaClient, User } from "@prisma/client";
+import {  PrismaClient, Role, User } from "@prisma/client";
+import { BadRequestError, InternalError, NotFoundError, UnprocessableEntityError } from "../models/api-error";
 
 
 const prisma = new PrismaClient();
@@ -12,14 +13,13 @@ class AuthController {
     new SuccessResponse("Success", { data:req.user }).send(res);
   }
 
-  async register(req: IRequest, res: Response, next: NextFunction): Promise<void> {
+  async register(req: IRequest, res: Response): Promise<void> {
     try {
       const { first_name, last_name, email, auth_id, birthday, profile_img } = req.body;
   
       // Validate input (basic example, expand as needed)
       if (!auth_id || !email) {
-        new BadRequestResponse("Bad Request", { error: 'auth_id and email are required' }).send(res);
-        return;
+        throw new BadRequestError('auth_id and email are required' )
       }
   
       // Check if the user already exists
@@ -28,8 +28,7 @@ class AuthController {
       });
   
       if (existingUser) {
-        new BadRequestResponse("Bad Request", { error: 'User already exists' }).send(res);
-        return;
+        throw new UnprocessableEntityError('User already exists');
       }
   
       // Create the user
@@ -49,10 +48,36 @@ class AuthController {
       return;
     } catch (error) {
       console.error('Error creating user:', error);
-      new InternalErrorResponse("InternalError",{ error: 'Internal Server Error' } ).send(res);
-      return;
+      throw new InternalError('Error creating new user')
     }
+}
+
+async updateProfile(req: IRequest, res: Response): Promise<void> {
+  try {
+    const {  first_name, last_name, email, birthday, profile_img } = req.body;
+
+    // Update the user
+    const updatedUser: User = await prisma.user.update({
+      where: { auth_id:req.user.auth_id },
+      data: {
+        first_name: first_name ?? req.user.first_name,
+        last_name: last_name ?? req.user.last_name,
+        email: email ?? req.user.email,
+        birthday: birthday ? new Date(birthday) : req.user.birthday,
+        profile_img: profile_img ?? req.user.profile_img,
+      },
+    });
+
+    // Return the updated user
+    new SuccessResponse('Profile updated successfully', { data: updatedUser }).send(res);
+    return;
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    throw new InternalError('Error updating user profile');
   }
+}
+
+
 
   async getAllRoles(req: IRequest, res: Response) {
     try {
@@ -60,7 +85,7 @@ class AuthController {
       new SuccessResponse("Success", { data:roles }).send(res);
     } catch (error) {
       console.error(error);
-      new InternalErrorResponse("InternalError", { error: 'Failed to retrieve roles' }).send(res);
+      throw new InternalError('Failed to retrieve roles')
     }
   };
 
@@ -69,7 +94,7 @@ class AuthController {
   
     try {
       if (!title || !role) {
-        return new BadRequestResponse("BadRequest", { error: 'Title and role are required' }).send(res);
+        throw new BadRequestError('Title and role are required');
       }
   
       const newRole = await prisma.role.create({
@@ -82,7 +107,7 @@ class AuthController {
       new CreatedResponse("Created", { data: newRole }).send(res);
     } catch (error) {
       console.error(error);
-      new InternalErrorResponse("InternalError", { error: 'Failed to create role' }).send(res);
+      throw new InternalError('Failed to create role')
     }
   }
 
@@ -91,17 +116,11 @@ class AuthController {
     const { title, role } = req.body;
 
     if(!id){
-      return new BadRequestResponse("id is invalid", { error: 'id is invalid' }).send(res);
+      throw new BadRequestError("id is invalid")
     }
   
     try {
-      const existingRole = await prisma.role.findUnique({
-        where: { id: parseInt(id) },
-      });
-  
-      if (!existingRole) {
-        return new NotFoundResponse("NotFound", { error: 'Role not found' }).send(res);
-      }
+      const existingRole = await this.getRoleElseThrow(id);
   
       const updatedRole = await prisma.role.update({
         where: { id: parseInt(id) },
@@ -110,11 +129,11 @@ class AuthController {
           role: role ?? existingRole.role,    // Keep existing role if not provided
         },
       });
-  
-      return res.status(200).json({ message: 'Role updated successfully', data: updatedRole });
+      return new SuccessResponse('Success',{data:updatedRole})
     } catch (error) {
       console.error(error);
-      new InternalErrorResponse("InternalError", { error: 'Failed to update role' }).send(res);
+
+      throw new InternalError('Failed to update role')
     }
   }
 
@@ -122,27 +141,33 @@ class AuthController {
     const { id } = req.params;
 
     if(!id){
-      return new BadRequestResponse("id is invalid", { error: 'id is invalid' }).send(res);
+      throw new BadRequestError("id is invalid")
+      
     }
   
     try {
-      const role = await prisma.role.findUnique({
-        where: { id: parseInt(id) },
-      });
-  
-      if (!role) {
-        return new NotFoundResponse("NotFound", { error: 'Role not found' }).send(res);
-      }
+      await this.getRoleElseThrow(id);
   
       await prisma.role.delete({
         where: { id: parseInt(id) },
       });
   
-      return res.status(200).json({ message: 'Role deleted successfully' });
+      return new SuccessResponse('Success',{data:'Role deleted successfully'})
     } catch (error) {
       console.error(error);
-      new InternalErrorResponse("InternalError", { error: 'Failed to delete role' }).send(res);
+      throw new InternalError('Failed to delete role')
     }
+  }
+
+  async getRoleElseThrow(id:string):Promise<Role>{
+    const role = await prisma.role.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!role) {
+      throw new NotFoundError('Role not found')
+    }
+    return role;
   }
 }
 
