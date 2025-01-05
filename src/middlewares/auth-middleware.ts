@@ -24,7 +24,8 @@ export default async function restricted(
     const decodedToken = await firebaseAuth().verifyIdToken(token);
     // req.user = decodedToken;
     const firebase_user = decodedToken;
-    
+    // console.log('firebase user is')
+    // console.log(firebase_user)
 
     //now check if the user exists in DB, if yes do nothing, otherwise create a db user now.
     const { user_id, email, name, picture } = firebase_user;

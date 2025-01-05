@@ -22,5 +22,13 @@ houseRouter
 .put(catchAsyncError(restricted), catchAsyncError(houseController.updateHouse))
 .delete(catchAsyncError(restricted), catchAsyncError(houseController.deleteHouse));
 
+houseRouter
+.route('/add-house-member')
+.get(catchAsyncError(restricted), catchAsyncError(houseController.addHouseMember));
+
+houseRouter
+.route('/house-member-requests/:requestId(\\d+)/action')
+.get(catchAsyncError(restricted), catchAsyncError(houseController.approveOrDenyMemberRequest));
+
   
 export default houseRouter

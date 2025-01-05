@@ -1,15 +1,12 @@
-import { HouseMemberApprovalState, PrismaClient, Role } from '@prisma/client';
-import { BadRequestError, NotFoundError } from './api-error';
-import { AuthRepository } from './auth-repository';
+import { PrismaClient } from '@prisma/client';
+
 
 
 export class UserRepository {
   private prisma: PrismaClient;
-  private authRepository:AuthRepository;
 
   constructor() {
     this.prisma = new PrismaClient();
-    this.authRepository=new AuthRepository();
   }
 
   // Search for a user by username

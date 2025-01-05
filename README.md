@@ -25,4 +25,4 @@ generates typescript models from the schema file
 for validation and everything, everytime you migrate you need to generate new client files to update the typescript models prisma use. `npx prisma generate`.
 
 ### Troubleshooting
-- Migrated, but in a query where you are using the generated model's fields, it is not updated yet. **Solution**: just wait 1-2 minutes. if it does not work, delete the client folder and regenerate client files. 
+- Migrated, but in a query where you are using the generated model's fields, it is not updated yet. **Solution**: just wait 5-15 minutes. if it does not work, delete the client folder and regenerate client files. 

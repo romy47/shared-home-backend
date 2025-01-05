@@ -1,31 +1,51 @@
-import { House, HouseMemberApprovalState, PrismaClient, Role } from '@prisma/client';
+import { House, HouseMemberApprovalState, HouseUser, PrismaClient, Role } from '@prisma/client';
 import { BadRequestError, ForbiddenError, NotFoundError } from './api-error';
-import { HouseDetails } from '../types/house.types';
+import { HouseCreationPayload, HouseDetails, HouseUserWithRole, HouseWithImgAndCreatedBy } from '../types/house.types';
 import { UserRepository } from './user-repository';
-import { UserRoleRepository } from './user.role.repository';
+import { AuthRepository } from './auth-repository';
+
 
 
 export class HouseRepository {
     private prisma: PrismaClient;
     private userRepository:UserRepository;
-    private userRoleRepository:UserRoleRepository;
+    private authRepository:AuthRepository;
 
     constructor() {
         this.prisma = new PrismaClient();
         this.userRepository = new UserRepository()
-        this.userRoleRepository = new UserRoleRepository();
+        this.authRepository = new AuthRepository()
     }
-   createHouse=async (data: { title: string; profile_img: string; created_by: number })=> {
+   createHouse=async (data: HouseCreationPayload)=> {
     return this.prisma.house.create({
       data,
     });
   }
+    getHouseUserWithRoleByHouseAndUser = async (houseId:number, userId:number):Promise<HouseUserWithRole>=> {
+      const houseUser:HouseUserWithRole|null = await this.prisma.houseUser.findUnique({
+        where: {
+          house_id_user_id: { //because it was composite key
+            house_id: houseId,
+            user_id: userId,
+          },
+        },
+        include: {
+          role: true, // This will include the associated role in the result, we need that
+        },
+      });
+      if(!houseUser)
+        throw new NotFoundError('house user is not found, meaning user is not a member of this house')
+      return houseUser
+    }
 
-   getAllHousesByUser=async(userId: number)=> {
+   getAllHousesByUser=async(userId: number):Promise<HouseWithImgAndCreatedBy[]>=> {
    
-    return this.prisma.house.findMany({
+    const houseList:HouseWithImgAndCreatedBy[]=  await this.prisma.house.findMany({
       where: {
-        created_by: userId, // Only houses created by the user
+        OR: [
+          { created_by: userId }, // Houses that are created by this user
+          { houseMembers: { some: { user_id: userId } } } // Houses where the user is a member
+        ]
       },
       select: {
         id: true,
@@ -33,24 +53,11 @@ export class HouseRepository {
         deleted: true,
         created_at: true,
         updated_at: true,
-        createdBy: {  // Explicitly select fields for the 'createdBy' relation
-          select: {
-            id: true,
-            first_name: true,
-            last_name: true,
-            email: true,
-            
-          },
-        },
-        houseImage: {  // Explicitly select fields for the 'houseImage' relation
-          select: {
-            id: true,
-            icon_name: true,
-            image_path: true,
-          },
-        },
+        createdBy: true,
+        houseImage: true
       }
     });
+    return houseList;
   }
 
 
@@ -61,26 +68,31 @@ export class HouseRepository {
     });
   }
     // Add a house member
-    addHouseMember=async(id: number, houseId: number, houseUserRefId: number, role: string)=> {
-      const user = await this.userRepository.findUserById(id);
+    addHouseMember=async(userId: number, requestUserId:number, houseId: number)=> {
+      const user = await this.userRepository.findUserById(userId);
+      //houseUser of currently logged in user
+      const houseUser = await this.getHouseUserWithRoleByHouseAndUser(houseId,requestUserId);
   
       if (!user) {
         throw new NotFoundError('User not found');
       }
   
-      const state = role === 'ADMIN' ? HouseMemberApprovalState.approved : HouseMemberApprovalState.pending; 
+      //if admin is adding someone, we will approve immediately, but still add a member request with state approved
+      const state = houseUser.role.role === 'ADMIN' ? HouseMemberApprovalState.approved : HouseMemberApprovalState.pending; 
   
       const houseMemberRequest = await this.prisma.houseMemberRequest.create({
         data: {
           house_id: houseId,
           user_id: user.id,
-          house_user_ref_id: houseUserRefId,
+          house_user_ref_id: houseUser.id,
           state,
         },
       });
   
-      if (role === 'ADMIN') {
-        const tenantRole:Role|null = await this.userRoleRepo.findRoleByRoleName('TENANT');
+      //if the role of the request user was admin then immediately add the new user as housemember
+      //as well
+      if (houseUser.role.role === 'ADMIN') {
+        const tenantRole:Role|null = await this.authRepository.findRoleByRoleName('TENANT');
         if(!tenantRole){
           throw new BadRequestError('tennat role does not exist')
         }
@@ -123,6 +135,88 @@ export class HouseRepository {
     }
     return houseDetails;
   }
+
+  getHouseMemberRequestById = async (requestId:number)=>{
+    const houseMemberRequest = await this.prisma.houseMemberRequest.findUnique({
+      where: { id: requestId },
+    });
+    return houseMemberRequest
+  }
+  updateHouseMemberRequestState = async (requestId:number, action:HouseMemberApprovalState)=>{
+    const updatedHouseMemberRequest = await this.prisma.houseMemberRequest.update({
+      where: { id: requestId },
+      data: { state: HouseMemberApprovalState.approved },
+    });
+    return updatedHouseMemberRequest
+  }
+  approveOrDenyHouseMemberRequest = async (
+    houseMemberRequestId: number, 
+    action: HouseMemberApprovalState, 
+    approverUserId: number
+  ) => {
+
+    // Find the house member request by ID
+    const houseMemberRequest = await this.getHouseMemberRequestById(houseMemberRequestId);
+  
+    if (!houseMemberRequest) {
+      throw new NotFoundError('House member request not found');
+    }
+  
+    if (houseMemberRequest.state === HouseMemberApprovalState.approved) {
+      return houseMemberRequest;
+    }
+
+    // Check if the approver is an admin for the house
+    const approverHouseUser = await this.getHouseUserWithRoleByHouseAndUser(houseMemberRequest.house_id,approverUserId);
+    if(approverHouseUser.role.role !== 'ADMIN')
+      throw new ForbiddenError('Only an admin can approve or deny requests');
+    
+  
+    if (action === HouseMemberApprovalState.approved) {
+      // Check if a house member already exists with the same user_id and house_id
+      const existingHouseMember = await this.prisma.houseUser.findFirst({
+        where: {
+          user_id: houseMemberRequest.user_id,
+          house_id: houseMemberRequest.house_id,
+        },
+      });
+  
+      if (existingHouseMember) {
+        throw new BadRequestError('House member already exists');
+      }
+  
+      // Update the house member request as approved
+      const updatedHouseMemberRequest = await this.updateHouseMemberRequestState(houseMemberRequestId,action)
+  
+
+      // Create a new house member
+      const tenantRole:Role|null = await this.authRepository.findRoleByRoleName('TENANT');
+      if(!tenantRole){
+        throw new NotFoundError('tenant role not found')
+      }
+      await this.prisma.houseUser.create({
+        data: {
+          house_id: houseMemberRequest.house_id,
+          user_id: houseMemberRequest.user_id,
+          role_id: tenantRole.id, // Assuming role_id is in the request
+        },
+      });
+  
+      return updatedHouseMemberRequest;
+    } else if (action === HouseMemberApprovalState.rejected) {
+      // Update the house member request as denied
+      const updatedHouseMemberRequest = await this.prisma.houseMemberRequest.update({
+        where: { id: houseMemberRequestId },
+        data: { state: HouseMemberApprovalState.rejected },
+      });
+  
+      return updatedHouseMemberRequest;
+    } else {
+      throw new BadRequestError('Invalid action');
+    }
+  };
+  
+  
 
    findHouseById=async(id: number)=> {
     if(id){

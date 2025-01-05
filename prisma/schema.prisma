@@ -83,6 +83,8 @@ model HouseUser {
   @@index([house_id])
   @@index([user_id])
   @@index([role_id])
+
+  @@unique([house_id, user_id])
 }
 
 model HouseMemberRequest {
