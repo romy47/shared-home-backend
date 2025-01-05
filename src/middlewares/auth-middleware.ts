@@ -19,7 +19,7 @@ export default async function restricted(
   }
 
   const token = authHeader.split(" ")[1] as string;
-  // console.log('frotnend token is', token)
+  console.log('frotnend token is', token)
   try {
     const decodedToken = await firebaseAuth().verifyIdToken(token);
     // req.user = decodedToken;
@@ -45,7 +45,7 @@ export default async function restricted(
           email: email || null,
           first_name: first_name || null,
           last_name: last_name || null,
-          profile_img: picture || null,
+          profile_img:  null,
         },
       });
     }

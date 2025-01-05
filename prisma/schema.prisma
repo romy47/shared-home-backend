@@ -14,33 +14,44 @@ datasource db {
 }
 
 model House {
-  id          Int      @id @default(autoincrement())
-  created_by  Int
-  title       String?
-  profile_img String?
-  deleted     Boolean? @default(false)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  created_by Int
+  title      String?
+  house_img  Int?
+  deleted    Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  createdBy User @relation(fields: [created_by], references: [id])
-
-  houseMembers HouseUser[]
+  createdBy                 User                 @relation(fields: [created_by], references: [id])
+  houseImage                ImageLibrary?        @relation(fields: [house_img], references: [id]) // Relation to ImageLibrary
+  houseMembers              HouseUser[]
+  taskCategories            TaskCategory[]
+  recurringTasks            RecurringTask[]
+  allHouseExpenseCategories ExpenseCategory[]
+  houseAllExpenses          Expense[]
+  recurringExpenses         RecurringExpense[]
+  taskList                  Task[]
+  allHouseMemberRequests    HouseMemberRequest[]
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  first_name  String?
-  last_name   String?
-  email       String?
-  auth_id     String @unique
-  birthday    DateTime?
-  profile_img String?
-  deleted     Boolean?  @default(false)
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @updatedAt
-
-  house_users HouseUser[]
-  houses House[]
+  id                 Int                  @id @default(autoincrement())
+  first_name         String?
+  last_name          String?
+  email              String?
+  auth_id            String               @unique
+  username           String?              @unique
+  birthday           DateTime?
+  profile_img        Int?
+  deleted            Boolean?             @default(false)
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @updatedAt
+  super_admin        Boolean              @default(false)
+  profileImage       ImageLibrary?        @relation(fields: [profile_img], references: [id])
+  house_users        HouseUser[]
+  houses             House[]
+  Task               Task[]
+  HouseMemberRequest HouseMemberRequest[]
 }
 
 model Role {
@@ -60,7 +71,220 @@ model HouseUser {
   user  User  @relation(fields: [user_id], references: [id])
   role  Role  @relation(fields: [role_id], references: [id])
 
+  taskCategories         TaskCategory[]
+  recurringTasks         RecurringTask[]
+  allExpenseCategories   ExpenseCategory[]
+  expenseList            Expense[]
+  rcurringExpenses       RecurringExpense[]
+  allExpenseSplits       ExpenseSplit[]
+  allTaskSplits          TaskSplit[]
+  allHouseMemberRequests HouseMemberRequest[]
+
   @@index([house_id])
   @@index([user_id])
   @@index([role_id])
+}
+
+model HouseMemberRequest {
+  id                Int                      @id @default(autoincrement())
+  house_id          Int
+  user_id           Int
+  house_user_ref_id Int // The reference of who invited (house_user_reference)
+  state             HouseMemberApprovalState // Enum for state (pending, approved, rejected)
+  created_at        DateTime                 @default(now())
+  updated_at        DateTime                 @updatedAt
+
+  house          House     @relation(fields: [house_id], references: [id])
+  user           User      @relation(fields: [user_id], references: [id])
+  house_user_ref HouseUser @relation(fields: [house_user_ref_id], references: [id])
+
+  @@index([house_id])
+  @@index([user_id])
+  @@index([house_user_ref_id])
+}
+
+enum HouseMemberApprovalState {
+  pending
+  approved
+  rejected
+}
+
+model ImageLibrary {
+  id             Int            @id @default(autoincrement())
+  icon_name      String
+  image_path     String
+  taskCategories TaskCategory[]
+
+  House           House[]
+  User            User[]
+  ExpenseCategory ExpenseCategory[]
+}
+
+model ExpenseCategory {
+  id         Int      @id @default(autoincrement())
+  created_by Int
+  house_id   Int
+  image_id   Int? // Changed to Int to store the image ID, making it optional
+  title      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  createdBy        HouseUser          @relation(fields: [created_by], references: [id])
+  house            House              @relation(fields: [house_id], references: [id])
+  image            ImageLibrary?      @relation(fields: [image_id], references: [id]) // Relation to ImageLibrary
+  Expense          Expense[]
+  RecurringExpense RecurringExpense[]
+}
+
+model Expense {
+  id                   Int      @id @default(autoincrement())
+  house_user_id        Int
+  house_id             Int
+  expense_category_id  Int
+  recurring_expense_id Int? // Make this optional if not all expenses are recurring
+  currency             String // Use String for ISO currency codes (e.g., "USD", "EUR")
+  title                String
+  amount               Decimal
+  created_at           DateTime @default(now()) // Use DateTime for timestamps
+  updated_at           DateTime @updatedAt // Use DateTime for timestamps
+
+  user             HouseUser         @relation(fields: [house_user_id], references: [id])
+  house            House             @relation(fields: [house_id], references: [id])
+  expenseCategory  ExpenseCategory   @relation(fields: [expense_category_id], references: [id])
+  recurringExpense RecurringExpense? @relation(fields: [recurring_expense_id], references: [id]) // Optional relation
+  ExpenseSplit     ExpenseSplit[]
+}
+
+model RecurringExpense {
+  id                  Int      @id @default(autoincrement())
+  house_user_id       Int
+  house_id            Int
+  expense_category_id Int
+  schedule_id         Int
+  title               String
+  amount              Decimal
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  user            HouseUser       @relation(fields: [house_user_id], references: [id])
+  house           House           @relation(fields: [house_id], references: [id])
+  expenseCategory ExpenseCategory @relation(fields: [expense_category_id], references: [id])
+  schedule        Schedule        @relation(fields: [schedule_id], references: [id])
+  Expense         Expense[]
+  ExpenseSplit    ExpenseSplit[]
+}
+
+model Schedule {
+  id                Int                @id @default(autoincrement())
+  frequency         Int // Maps to tiny_int (Prisma doesn't have tiny_int, Int is the closest)
+  multiplier        Int // Maps to tiny_int
+  offset            Int // Maps to tiny_int
+  start_date        DateTime? // Maps to date, making it optional as it might not always be present
+  end_date          DateTime? // Maps to date, making it optional
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+  recurringExpenses RecurringExpense[]
+  recurringTasks    RecurringTask[]
+}
+
+model RecurringTask {
+  id               Int       @id @default(autoincrement())
+  house_user_id    Int
+  house_id         Int
+  task_category_id Int
+  schedule_id      Int
+  title            String
+  due_date         DateTime? // Changed to DateTime? (nullable)
+  description      String? // Changed to String? (nullable)
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  user         HouseUser    @relation(fields: [house_user_id], references: [id])
+  house        House        @relation(fields: [house_id], references: [id])
+  taskCategory TaskCategory @relation(fields: [task_category_id], references: [id])
+  schedule     Schedule     @relation(fields: [schedule_id], references: [id])
+  TaskSplit    TaskSplit[]
+  Task         Task[]
+}
+
+model TaskCategory {
+  id            Int      @id @default(autoincrement())
+  house_user_id Int // Should be Int to reference the User model's id
+  house_id      Int // Should be Int to reference the House model's id
+  image_id      Int? // Should be Int? to reference the ImageLibrary model's id, and optional
+  title         String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  user           HouseUser       @relation(fields: [house_user_id], references: [id])
+  house          House           @relation(fields: [house_id], references: [id])
+  image          ImageLibrary?   @relation(fields: [image_id], references: [id])
+  recurringTasks RecurringTask[]
+  Task           Task[]
+}
+
+model ExpenseSplit {
+  id                   Int                @id @default(autoincrement())
+  expense_id           Int
+  house_user_id        Int
+  recurring_expense_id Int? // Make this optional as it might not always be present
+  amount               Decimal
+  amount_due           Decimal
+  status               ExpenseSplitStatus @default(OWED) // Use an enum
+  created_at           DateTime           @default(now())
+  updated_at           DateTime           @updatedAt
+
+  expense          Expense           @relation(fields: [expense_id], references: [id])
+  user             HouseUser         @relation(fields: [house_user_id], references: [id])
+  recurringExpense RecurringExpense? @relation(fields: [recurring_expense_id], references: [id]) // Optional relation
+}
+
+enum ExpenseSplitStatus {
+  OWED
+  SETTLED
+}
+
+model TaskSplit {
+  id                Int             @id @default(autoincrement())
+  task_id           Int
+  house_user_id     Int
+  recurring_task_id Int? // Optional, as not all tasks are recurring
+  status            TaskSplitStatus @default(PENDING)
+  created_at        DateTime        @default(now())
+  updated_at        DateTime        @updatedAt
+
+  task          Task           @relation(fields: [task_id], references: [id])
+  user          HouseUser      @relation(fields: [house_user_id], references: [id])
+  recurringTask RecurringTask? @relation(fields: [recurring_task_id], references: [id]) // Optional relation
+}
+
+enum TaskSplitStatus {
+  PENDING
+  COMPLETED
+}
+
+model Task {
+  id                Int         @id @default(autoincrement())
+  house_user_id     Int
+  house_id          Int
+  task_category_id  Int
+  recurring_task_id Int? // Optional relation
+  title             String
+  due_date          DateTime? // Use DateTime? for dates
+  status            TaskStatus  @default(PENDING)
+  description       String? // Make description optional
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  taskSplits        TaskSplit[]
+
+  user          User           @relation(fields: [house_user_id], references: [id])
+  house         House          @relation(fields: [house_id], references: [id])
+  taskCategory  TaskCategory   @relation(fields: [task_category_id], references: [id])
+  recurringTask RecurringTask? @relation(fields: [recurring_task_id], references: [id]) // Optional relation
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }
