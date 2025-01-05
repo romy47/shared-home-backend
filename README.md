@@ -4,6 +4,7 @@
 **Have nodejs installed on the system.**
 
 - clone the project
+- in the project root run npm install
 - have a postgres db running in docker/cloud, have the user, connecting url handy.
 - have an .env file in the project root, with the variable mentioned as .env-example file.
 - also have a .env.develop file inside the src\environment folder. follow the example file.
