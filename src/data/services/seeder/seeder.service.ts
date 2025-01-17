@@ -1,7 +1,7 @@
 import { Command, CommandRunner, Option } from 'nest-commander';
 import { PrismaService } from '../prisma/prisma.service';
 import { faker } from '@faker-js/faker';
-import { FirebaseAdminService } from '../firebase/firebase.service';
+import { FirebaseAdminService } from '../firebase/firebase-admin.service';
 
 @Command({
   name: 'db:seed',

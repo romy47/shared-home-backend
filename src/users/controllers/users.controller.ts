@@ -1,10 +1,20 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserBaseEntity, UserDetailEntity } from './entities/user.entity';
-import { ApiOkResponse } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UserBaseEntity, UserDetailEntity } from '../entities/user.entity';
+import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
+import { AuthGuard, Public } from '../../guards/auth.guard';
+import { UsersService } from '../services/users.service';
 
 @Controller('users')
+@ApiBearerAuth('access-token')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -18,8 +28,8 @@ export class UsersController {
 
   @Get(':id')
   @ApiOkResponse({ type: UserDetailEntity })
-  async findOne(@Param('id') id: string) {
-    const user = await this.usersService.findOne(+id);
+  async findOne(@Request() req, @Param('id') id: string) {
+    const user = req.user;
     return new UserDetailEntity(user);
   }
 
