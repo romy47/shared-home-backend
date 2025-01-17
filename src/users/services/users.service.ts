@@ -3,8 +3,8 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { PrismaService } from 'src/data/services/prisma/prisma.service';
 import { User } from '@prisma/client';
 
@@ -35,6 +35,31 @@ export class UsersService {
   async findOne(id: number): Promise<User> {
     const user = await this.prismaService.user.findUnique({
       where: { id },
+      include: {
+        house_users: {
+          include: {
+            house: true,
+            role: true,
+          },
+          omit: {
+            role_id: true,
+            house_id: true,
+            user_id: true,
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async findOneByAuthId(authId: string): Promise<User> {
+    const user = await this.prismaService.user.findUnique({
+      where: { auth_id: authId },
       include: {
         house_users: {
           include: {
