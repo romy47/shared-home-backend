@@ -39,6 +39,12 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
     // Swagger initialized
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+  // Swagger initialized
+
+  // Initializing nest commander
+  // await CommandFactory.run(AppModule);
 
     await app.listen(process.env.PORT ?? 3000);
   }
