@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { Exclude } from 'class-transformer';
-import { BaseHouseEntity } from './house.entity';
 import { BaseRoleEntity } from './role.entity';
 
 export class UserBaseEntity implements User {
@@ -40,6 +39,7 @@ export class UserBaseEntity implements User {
     format: 'date-time',
     nullable: true,
   })
+  @Exclude()
   birthday: Date | null;
 
   @ApiProperty({
@@ -72,26 +72,26 @@ export class UserBaseEntity implements User {
   }
 }
 
-class houseUserEntity {
+export class UserRoleEntity {
   @ApiProperty()
-  house: BaseHouseEntity;
+  user: UserBaseEntity;
   @ApiProperty()
   role: BaseRoleEntity;
 
-  constructor(data: Partial<houseUserEntity>) {
-    this.house = new BaseHouseEntity(data?.house || {});
+  constructor(data: Partial<UserRoleEntity>) {
+    this.user = new UserBaseEntity(data?.user || {});
     this.role = new BaseRoleEntity(data?.role || {});
   }
 }
 
 export class UserDetailEntity extends UserBaseEntity {
-  @ApiProperty({ type: houseUserEntity })
-  house_users: houseUserEntity[] = [];
+  @ApiProperty({ type: UserRoleEntity })
+  house_users: UserRoleEntity[] = [];
 
   constructor(data: Partial<UserDetailEntity>) {
     super(data);
     data?.house_users?.forEach((hu) => {
-      this.house_users.push(new houseUserEntity(hu));
+      this.house_users.push(new UserRoleEntity(hu));
     });
   }
 }
