@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { House } from '@prisma/client';
-
+import { UserRoleEntity } from './user.entity';
 export class BaseHouseEntity implements House {
   @ApiProperty({
     type: 'integer',
@@ -39,5 +39,17 @@ export class BaseHouseEntity implements House {
   updated_at: Date;
   constructor(data: Partial<BaseHouseEntity>) {
     Object.assign(this, data);
+  }
+}
+
+export class HouseDetailEntity extends BaseHouseEntity {
+  @ApiProperty({ type: UserRoleEntity })
+  houseMembers: UserRoleEntity[] = [];
+
+  constructor(data: Partial<HouseDetailEntity>) {
+    super(data);
+    data?.houseMembers?.forEach((ur) => {
+      this.houseMembers.push(new UserRoleEntity(ur));
+    });
   }
 }
