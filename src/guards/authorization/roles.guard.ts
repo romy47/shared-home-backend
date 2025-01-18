@@ -17,8 +17,10 @@ export class HouseRolesGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const params = request.params;
-    const house_id = params.house_id;
+    if (!(request.params && request.params.house_id)) {
+      return false;
+    }
+    const house_id = request.params.house_id;
     const { user } = context.switchToHttp().getRequest();
     return requiredRoles.some((role) => {
       const house_user: UserRoleEntity = user.house_users.find(
