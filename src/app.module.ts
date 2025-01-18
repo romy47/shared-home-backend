@@ -6,7 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DataModule, UsersModule, TasksModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DataModule, UsersModule],
   controllers: [],
   // Providing the app guard here, ensures the guard is centrally activated for all controllers and, all API endpoints.
   // For making a particular API public put @public() decorator with that endpoint.
