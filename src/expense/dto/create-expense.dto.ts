@@ -1,6 +1,18 @@
 import { Prisma } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDecimal, IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsDecimal, IsNotEmpty, IsString, IsNumber, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class ParticipantDto {
+  @IsNumber()
+  userId: number;
+
+  @IsNumber()
+  paid: number;
+
+  @IsNumber()
+  due: number;
+}
 
 export class CreateExpenseDto {
   @ApiProperty({
@@ -45,4 +57,12 @@ export class CreateExpenseDto {
   @IsNotEmpty()
   @IsNumber()
   expenseCategoryId: number;
+
+  @ApiProperty({
+    type: 'array',
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ParticipantDto)
+  participants: ParticipantDto[];
 }

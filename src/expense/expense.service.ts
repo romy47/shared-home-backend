@@ -1,47 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
-import { Expense } from '@prisma/client';
+import { Expense, ExpenseSplitStatus } from '@prisma/client';
 import { PrismaService } from 'src/data/services/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ExpenseService {
   constructor(private prismaService: PrismaService) {}
+
   async create(createExpenseDto: CreateExpenseDto): Promise<Expense> {
-    // create the expense
-    return await this.prismaService.expense.create({
+    const expense = await this.prismaService.expense.create({
       data: {
-        ...createExpenseDto,
-        amount: new Prisma.Decimal(createExpenseDto.amount),
-        user: {
-          connect: { id: Number(createExpenseDto.userId) },
-        },
-        house: {
-          connect: { id: Number(createExpenseDto.houseId) },
-        },
-        expenseCategory: {
-          connect: { id: Number(createExpenseDto.expenseCategoryId) },
-        },
+        amount: createExpenseDto.amount,
+        currency: createExpenseDto.currency,
+        title: createExpenseDto.title,
+        house_user_id: createExpenseDto.userId,
+        house_id: createExpenseDto.houseId,
+        expense_category_id: createExpenseDto.expenseCategoryId,
       },
     });
-  }
 
-  async findAll(): Promise<Expense[]> {
-    return this.prismaService.expense.findMany();
-  }
+    const expenseSplits = createExpenseDto.participants.map(participant => ({
+      expense_id: expense.id,
+      house_user_id: participant.userId,
+      amount: new Prisma.Decimal(participant.paid),
+      amount_due: new Prisma.Decimal(participant.due),
+      status: participant.due < participant.paid ? ExpenseSplitStatus.OWED : ExpenseSplitStatus.SETTLED,
+    }));
 
-  findByUserId(userId: number) {
-    return this.prismaService.expense.findMany({
-      where: { house_user_id: userId },
+    await this.prismaService.expenseSplit.createMany({
+      data: expenseSplits,
     });
+
+    return expense;
   }
 
-  findByHouseId(houseId: number) {
-    return this.prismaService.expense.findMany({
-      where: { house_id: houseId },
-    });
-  }
+  // async findAll(): Promise<Expense[]> {
+  //   return this.prismaService.expense.findMany();
+  // }
+
+  // findByUserId(userId: number) {
+  //   return this.prismaService.expense.findMany({
+  //     where: { house_user_id: userId },
+  //   });
+  // }
+
+  // findByHouseId(houseId: number) {
+  //   return this.prismaService.expense.findMany({
+  //     where: { house_id: houseId },
+  //   });
+  // }
 
   // findOne(id: number) {
   //   return `This action returns a #${id} expense`;

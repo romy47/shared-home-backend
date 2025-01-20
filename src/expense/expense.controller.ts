@@ -12,26 +12,26 @@ export class ExpenseController {
   @Post()
   @ApiOkResponse({})
   async create(@Body() createExpenseDto: CreateExpenseDto): Promise<ExpenseBaseEntity> {
-    const expse = await this.expenseService.create(createExpenseDto);
-    return new ExpenseBaseEntity(expse);
+    const expense = await this.expenseService.create(createExpenseDto);
+    return new ExpenseBaseEntity(expense);
   }
 
-  @Get()
-  @ApiOkResponse({ type: [ExpenseBaseEntity] })
-  async findAll(): Promise<ExpenseBaseEntity[]> {
-    const expenses = await this.expenseService.findAll();
-    return expenses.map(expense => new ExpenseBaseEntity(expense));
-  }
+  // @Get()
+  // @ApiOkResponse({ type: [ExpenseBaseEntity] })
+  // async findAll(): Promise<ExpenseBaseEntity[]> {
+  //   const expenses = await this.expenseService.findAll();
+  //   return expenses.map(expense => new ExpenseBaseEntity(expense));
+  // }
 
-  @Get('user/:userId')
-  findByUserId(@Param('userId') userId: number) {
-    return this.expenseService.findByUserId(userId);
-  }
+  // @Get('user/:userId')
+  // findByUserId(@Param('userId') userId: number) {
+  //   return this.expenseService.findByUserId(userId);
+  // }
 
-  @Get('house/:houseId')
-  findByHouseId(@Param('houseId') houseId: number) {
-    return this.expenseService.findByHouseId(houseId);
-  }
+  // @Get('house/:houseId')
+  // findByHouseId(@Param('houseId') houseId: number) {
+  //   return this.expenseService.findByHouseId(houseId);
+  // }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
