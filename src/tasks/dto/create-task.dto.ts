@@ -7,6 +7,8 @@ import {
   IsEnum,
   IsDateString,
   IsNotEmpty,
+  IsArray,
+  ArrayMinSize,
 } from 'class-validator';
 
 export class CreateTaskDto {
@@ -54,4 +56,23 @@ export class CreateTaskDto {
   })
   @IsEnum(TaskStatus) 
   status: string;
+
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'integer',
+      format: 'int32',
+    },
+  })
+  @IsArray()
+  @ArrayMinSize(1) 
+  @IsInt({ each: true })
+  user_ids: number[];
 }
+
+export class CreateTaskCategoryDto {
+  house_id: number;
+  image_id?: number;
+  title: string;
+}
+

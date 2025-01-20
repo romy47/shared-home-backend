@@ -258,7 +258,7 @@ model TaskSplit {
   updated_at        DateTime        @updatedAt
 
   task          Task           @relation(fields: [task_id], references: [id])
-  user          HouseUser      @relation(fields: [house_user_id], references: [id])
+  houseUser          HouseUser      @relation(fields: [house_user_id], references: [id])
   recurringTask RecurringTask? @relation(fields: [recurring_task_id], references: [id]) // Optional relation
 }
 
