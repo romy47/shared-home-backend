@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 
 
 import { UsersService } from '../services/users.service';
+import { Public } from 'src/guards/auth.guard';
 
 @Controller('users')
 @ApiBearerAuth('access-token')
@@ -12,6 +13,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @Public()
   @ApiOkResponse({ type: UserBaseEntity })
   async create(@Body() createUserDto: CreateUserDto): Promise<UserBaseEntity> {
     console.log(createUserDto);

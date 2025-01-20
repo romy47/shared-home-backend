@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
     console.log(token);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("token is not valid....");
     }
     try {
       const payload = await this.firebaseAdminService
@@ -43,7 +43,7 @@ export class AuthGuard implements CanActivate {
       const user = await this.usersService.findOneByAuthId(user_id);
       request['user'] = user;
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException("firebase token validation failed...");
     }
     return true;
   }
