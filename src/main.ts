@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { CommandFactory } from 'nest-commander';
 
-
 async function bootstrap() {
   // We either provide the server or Nest CLI based on the presence of "--cli" in the initial command.
   const isCLI = process.argv.slice(2).includes('--cli');
@@ -26,7 +25,6 @@ async function bootstrap() {
     const config = new DocumentBuilder()
       .setTitle('SharedHome')
       .setDescription('The SharedHome API description')
-      .addServer('api/v1') // Add the base path for the API
       .addBearerAuth(
         {
           description: `Please enter token. You can get the token from the login API.`,
