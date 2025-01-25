@@ -109,3 +109,38 @@ Below is an example:
 @‌Get(':house_id')
 @‌UseGuards(HouseRolesGuard)
 @‌HouseRoles(HouseRole.TENANT, HouseRole.ADMIN)
+
+
+### How to use the standard paginated API response method?
+This standard method ensures that we are sending consistent list api response always.
+
+example can be found in task service.
+
+```
+  async listByTaskCategoryByHouse(house_id: number) {
+    
+    //this type means, the type for creating query that results in a list,
+    //it is generated from the prisma models already, for our TaskCategory model
+    //prisma generated it for us..
+    const query:Prisma.TaskCategoryFindManyArgs ={
+      where: { house_id },
+      include: {
+        house: true, 
+        user: true,  
+        image:true
+      },
+    };
+    //thes parameters are supposed to come from request, here we are demosntarting an example
+    const params:PaginationParams = {
+      page: 1,
+      pageSize: 5
+    }
+    return this.paginationService.paginate(
+      this.prismaService.taskCategory, 
+      params, 
+      query
+    );
+
+    
+  }
+```
