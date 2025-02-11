@@ -92,6 +92,7 @@ Below is an example:
 @‌Get(':house_id')
 @‌UseGuards(HouseRolesGuard)
 @‌HouseRoles(HouseRole.TENANT, HouseRole.ADMIN)
+<<<<<<< HEAD
 =======
 >>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
 ### Authentication
@@ -111,6 +112,8 @@ Below is an example:
 @‌Get(':house_id')
 @‌UseGuards(HouseRolesGuard)
 @‌HouseRoles(HouseRole.TENANT, HouseRole.ADMIN)
+=======
+>>>>>>> f2d6a44 (added pagiantion)
 
 
 ### How to use the standard paginated API response method?

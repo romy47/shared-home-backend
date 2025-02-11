@@ -114,6 +114,7 @@ export class TasksController {
 
   @Get('/taskcategory-by-house/:house_id')
 <<<<<<< HEAD
+<<<<<<< HEAD
   async listByHouse(@Param('house_id') house_id: number) {
     return this.tasksService.listByTaskCategoryByHouse(+house_id);
   }
@@ -122,6 +123,10 @@ export class TasksController {
 =======
   async listByHouse(@Param('house_id') house_id: number): Promise<TaskCategoryDetailDto[]> {
     return this.tasksService.listByTaskCategoryByHouse(house_id);
+=======
+  async listByHouse(@Param('house_id') house_id: number) {
+    return this.tasksService.listByTaskCategoryByHouse(+house_id);
+>>>>>>> f2d6a44 (added pagiantion)
   }
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
 }
