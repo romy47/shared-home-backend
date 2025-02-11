@@ -631,11 +631,14 @@ import { PrismaService } from 'src/data/services/prisma/prisma.service';
 import { TaskSplitStatus, TaskStatus, User, TaskSplit, Task } from '@prisma/client';
 import { TaskCategoryDetailDto, TaskDetailDto } from './dto/task-detail.dto';
 import { UpdateTaskCategoryDto } from 'src/generated/nestjs-dto/update-taskCategory.dto';
+import { PaginationService } from 'src/data/common/pagination-service';
+import { PaginationParams } from 'src/data/common/pagination-metadata';
+
 
 
 @Injectable()
 export class TasksService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService, private paginationService: PaginationService) {}
   async create(user: User, createTaskDto: CreateTaskDto) {
     const userId = user.id;
   
@@ -1476,8 +1479,12 @@ export class TasksService {
     });
   }
   
-  async listByTaskCategoryByHouse(house_id: number): Promise<TaskCategoryDetailDto[]> {
-    const taskCategories = await this.prismaService.taskCategory.findMany({
+  async listByTaskCategoryByHouse(house_id: number) {
+    
+    //this type means, the type for creating query that results in a list,
+    //it is generated from the prisma models already, for our TaskCategory model
+    //prisma generated it for us..
+    const query:Prisma.TaskCategoryFindManyArgs ={
       where: { house_id },
       include: {
         house: true, 

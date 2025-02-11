@@ -36,10 +36,10 @@ import { PaginationService } from 'src/data/common/pagination-service';
 >>>>>>> 67de227 (rebased with dev)
 =======
 import { PrismaService } from 'src/data/services/prisma/prisma.service';
+import { PaginationService } from 'src/data/common/pagination-service';
 
 @Module({
   controllers: [TasksController],
-  providers: [TasksService, PrismaService],
->>>>>>> 6fccb97 (CREATE TASK ,TASK CATEGORY APIS)
+  providers: [TasksService, PrismaService, PaginationService],
 })
 export class TasksModule {}
