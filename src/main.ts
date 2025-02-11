@@ -18,6 +18,9 @@ async function bootstrap() {
     app.useGlobalInterceptors(
       new ClassSerializerInterceptor(app.get(Reflector)),
     );
+    // Set the global prefix for all routes
+    app.setGlobalPrefix('api/v1');
+
     // Initializing swagger
     const config = new DocumentBuilder()
       .setTitle('SharedHome')
@@ -38,32 +41,12 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  
-=======
-    // Swagger initialized
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-  // Swagger initialized
-<<<<<<< HEAD
-=======
 
-  // Initializing nest commander
-  // await CommandFactory.run(AppModule);
->>>>>>> 67de227 (rebased with dev)
 
   // Initializing nest commander
   // await CommandFactory.run(AppModule);
 
->>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
-=======
-  
->>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
-=======
-  
->>>>>>> 6fccb97 (CREATE TASK ,TASK CATEGORY APIS)
+
     await app.listen(process.env.PORT ?? 3000);
   }
 }
