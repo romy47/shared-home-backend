@@ -18,6 +18,9 @@ async function bootstrap() {
     app.useGlobalInterceptors(
       new ClassSerializerInterceptor(app.get(Reflector)),
     );
+    // Set the global prefix for all routes
+    app.setGlobalPrefix('api/v1');
+
     // Initializing swagger
     const config = new DocumentBuilder()
       .setTitle('SharedHome')
@@ -39,7 +42,6 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
     // Swagger initialized
-
     await app.listen(process.env.PORT ?? 3000);
   }
 }
