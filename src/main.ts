@@ -46,6 +46,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   // Swagger initialized
+<<<<<<< HEAD
+=======
+
+  // Initializing nest commander
+  // await CommandFactory.run(AppModule);
+>>>>>>> 67de227 (rebased with dev)
 
   // Initializing nest commander
   // await CommandFactory.run(AppModule);

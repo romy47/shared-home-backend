@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Req } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskCategoryDto, CreateTaskDto } from './dto/create-task.dto';
@@ -30,10 +31,19 @@ import { TaskCategoryDetailDto } from './dto/task-detail.dto';
 =======
 @ApiBearerAuth('access-token')
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { TasksService } from './tasks.service';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+
+@Controller('tasks')
+>>>>>>> 67de227 (rebased with dev)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   create(@Request() req, @Body() createTaskDto: CreateTaskDto) {
@@ -46,10 +56,15 @@ export class TasksController {
   create(@Request() req, @Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(req.user, createTaskDto);
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+  create(@Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create(createTaskDto);
+>>>>>>> 67de227 (rebased with dev)
   }
 
   @Get('/task-by-home/:id')
   findAllTaskByHome(@Param('id') id: string) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     console.log('api call...........')
@@ -58,6 +73,8 @@ export class TasksController {
 =======
     console.log('api call...........')
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+>>>>>>> 67de227 (rebased with dev)
     return this.tasksService.findAllTaskByHome(parseInt(id));
   }
 
@@ -73,6 +90,7 @@ export class TasksController {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
   @Patch('/task-split-status-update/:id')
@@ -85,10 +103,13 @@ export class TasksController {
 >>>>>>> 07ef766 (rebased with dev)
 =======
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+>>>>>>> 67de227 (rebased with dev)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tasksService.remove(+id);
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -129,4 +150,6 @@ export class TasksController {
 >>>>>>> f2d6a44 (added pagiantion)
   }
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+>>>>>>> 67de227 (rebased with dev)
 }

@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Body, ForbiddenException, Injectable, NotFoundException, Param, Patch, Req } from '@nestjs/common';
 import { CreateTaskCategoryDto, CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto, UpdateTaskSplitDto } from './dto/update-task.dto';
@@ -616,20 +617,67 @@ export class TasksService {
 
   async findAllTaskByHome(houseId: number) {
     console.log("here............")
+=======
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+import { PrismaService } from 'src/data/services/prisma/prisma.service';
+import { TaskStatus } from '@prisma/client';
+
+@Injectable()
+export class TasksService {
+  constructor(private prismaService: PrismaService) {}
+  async create(createTaskDto: CreateTaskDto) {
+    const userId; //TODO will come req.user
+    const houseUser = await this.prismaService.houseUser.findUnique({
+      where: {
+        house_id_user_id: {
+          house_id: createTaskDto.house_id,
+          user_id: userId,
+        },
+      },
+    });
+    if (!houseUser) {
+      throw new NotFoundException('HouseUser not found'); //TODO 
+    }
+
+    const newTask = await this.prismaService.task.create({
+      data: {
+        house_user_id: houseUser.id, 
+        house_id: createTaskDto.house_id,
+        task_category_id: createTaskDto.task_category_id,
+        title: createTaskDto.title,
+        due_date: createTaskDto.due_date,
+        status: createTaskDto.status as TaskStatus, 
+        description: createTaskDto.description,
+      },
+    });
+    return newTask;
+
+  }
+
+  async findAllTaskByHome(houseId: number) {
+>>>>>>> 67de227 (rebased with dev)
     const tasks = await this.prismaService.task.findMany({
       where: {
         house_id: houseId,
       },
       include: {
+<<<<<<< HEAD
         taskCategory: true, 
         houseUser: true, //it is the owner,
         taskSplits:true
+=======
+        taskCategory: true, // Optionally include related task category data
+        houseUser: true, // Optionally include user data related to the task
+>>>>>>> 67de227 (rebased with dev)
       },
     });
     
     return tasks;
   }
 
+<<<<<<< HEAD
   async findOne(id: number): Promise<TaskDetailDto> {
     const task = await this.prismaService.task.findUnique({
       where: { id },
@@ -1005,4 +1053,17 @@ export class TasksService {
   
   
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+  findOne(id: number) {
+    return `This action returns a #${id} task`;
+  }
+
+  update(id: number, updateTaskDto: UpdateTaskDto) {
+    return `This action updates a #${id} task`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} task`;
+  }
+>>>>>>> 67de227 (rebased with dev)
 }
