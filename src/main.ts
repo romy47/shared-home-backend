@@ -39,6 +39,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 =======
     // Swagger initialized
@@ -50,6 +51,9 @@ async function bootstrap() {
   // await CommandFactory.run(AppModule);
 
 >>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
+=======
+  
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
     await app.listen(process.env.PORT ?? 3000);
   }
 }

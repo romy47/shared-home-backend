@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Req } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskCategoryDto, CreateTaskDto } from './dto/create-task.dto';
@@ -12,16 +13,28 @@ import { TaskCategoryDetailDto } from './dto/task-detail.dto';
 @ApiBearerAuth('access-token')
 =======
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+=======
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Req } from '@nestjs/common';
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
 import { TasksService } from './tasks.service';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
+import { CreateTaskCategoryDto, CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto, UpdateTaskSplitDto } from './dto/update-task.dto';
+import { Public } from 'src/guards/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateTaskCategoryDto } from 'src/generated/nestjs-dto/update-taskCategory.dto';
+import { TaskCategoryDetailDto } from './dto/task-detail.dto';
 
 @Controller('tasks')
+<<<<<<< HEAD
 >>>>>>> 07ef766 (rebased with dev)
+=======
+@ApiBearerAuth('access-token')
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
+<<<<<<< HEAD
 <<<<<<< HEAD
   create(@Request() req, @Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(req.user, createTaskDto);
@@ -29,14 +42,22 @@ export class TasksController {
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(createTaskDto);
 >>>>>>> 07ef766 (rebased with dev)
+=======
+  create(@Request() req, @Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create(req.user, createTaskDto);
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
   }
 
   @Get('/task-by-home/:id')
   findAllTaskByHome(@Param('id') id: string) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     console.log('api call...........')
 =======
 >>>>>>> 07ef766 (rebased with dev)
+=======
+    console.log('api call...........')
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
     return this.tasksService.findAllTaskByHome(parseInt(id));
   }
 
@@ -51,18 +72,27 @@ export class TasksController {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
   @Patch('/task-split-status-update/:id')
   updateTaskSplitStatus(@Request() req, @Param('id') id: string, @Body() taskSplitUpdateDto: UpdateTaskSplitDto) {
     return this.tasksService.updateTaskSplitStatus(+id, taskSplitUpdateDto,req.user);
   }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 07ef766 (rebased with dev)
+=======
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tasksService.remove(+id);
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
 
   @Post('/task-category')
   async createTaskCategory(@Request() req, @Body() createTaskCategoryDto: CreateTaskCategoryDto) {
@@ -83,9 +113,15 @@ export class TasksController {
   }
 
   @Get('/taskcategory-by-house/:house_id')
+<<<<<<< HEAD
   async listByHouse(@Param('house_id') house_id: number) {
     return this.tasksService.listByTaskCategoryByHouse(+house_id);
   }
 =======
 >>>>>>> 07ef766 (rebased with dev)
+=======
+  async listByHouse(@Param('house_id') house_id: number): Promise<TaskCategoryDetailDto[]> {
+    return this.tasksService.listByTaskCategoryByHouse(house_id);
+  }
+>>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
 }
