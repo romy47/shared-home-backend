@@ -12,5 +12,6 @@ import { HousesService } from './services/houses.service';
   imports: [DataModule],
   providers: [UsersService, AuthService, HousesService],
   exports: [UsersService, AuthService, HousesService],
+
 })
 export class UsersModule {}

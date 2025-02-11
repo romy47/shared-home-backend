@@ -50,17 +50,25 @@ npm run start:dev
 ```
 
 ### DB Seeding
+<<<<<<< HEAD
 
 edit the last integer based on the number of houses you want
 
+=======
+edit the last integer based on the number of houses you want
+>>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
 ```
 node dist/main.js db:seed --cli --houses 3
 ```
 
 ### Swagger Guideline
+<<<<<<< HEAD
 
 The routes are guarded with token validation. Only signup and login is public. Here is the guideline for authorizing in Swagger.
 
+=======
+The routes are guarded with token validation. Only signup and login is public. Here is the guideline for authorizing in Swagger.
+>>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
 1. Open Swagger and locate the login endpoint under the Authentication section.
 2. Click "Try it out," enter valid credentials, and execute the request.
 3. Copy the token from the response.
@@ -69,6 +77,7 @@ The routes are guarded with token validation. Only signup and login is public. H
 6. Confirm authorization, ensuring the token is applied globally for secured routes.
 7. Test guarded routes by clicking "Try it out" to verify they are accessible.
 
+<<<<<<< HEAD
 ### Authentication
 
 1. The AuthGuard is centrally placed in the app module, and all API endpoints are automatically protected.
@@ -86,3 +95,5 @@ Below is an example:
 @‌Get(':house_id')
 @‌UseGuards(HouseRolesGuard)
 @‌HouseRoles(HouseRole.TENANT, HouseRole.ADMIN)
+=======
+>>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
