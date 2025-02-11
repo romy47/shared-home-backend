@@ -52,6 +52,7 @@ npm run start:dev
 ### DB Seeding
 
 edit the last integer based on the number of houses you want
+
 ```
 node dist/main.js db:seed --cli --houses 3
 ```
@@ -64,6 +65,7 @@ The routes are guarded with token validation. Only signup and login is public. H
 =======
 
 The routes are guarded with token validation. Only signup and login is public. Here is the guideline for authorizing in Swagger.
+
 1. Open Swagger and locate the login endpoint under the Authentication section.
 2. Click "Try it out," enter valid credentials, and execute the request.
 3. Copy the token from the response.
