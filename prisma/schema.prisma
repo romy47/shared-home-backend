@@ -51,7 +51,7 @@ model User {
   profileImage       ImageLibrary?        @relation(fields: [profile_img], references: [id])
   house_users        HouseUser[]
   houses             House[]
-  Task               Task[]
+  
   HouseMemberRequest HouseMemberRequest[]
 }
 
@@ -80,6 +80,7 @@ model HouseUser {
   allExpenseSplits       ExpenseSplit[]
   allTaskSplits          TaskSplit[]
   allHouseMemberRequests HouseMemberRequest[]
+  allTasks               Task[]
 
   @@index([house_id])
   @@index([user_id])
@@ -257,7 +258,7 @@ model TaskSplit {
   updated_at        DateTime        @updatedAt
 
   task          Task           @relation(fields: [task_id], references: [id])
-  user          HouseUser      @relation(fields: [house_user_id], references: [id])
+  houseUser          HouseUser      @relation(fields: [house_user_id], references: [id])
   recurringTask RecurringTask? @relation(fields: [recurring_task_id], references: [id]) // Optional relation
 }
 
@@ -280,7 +281,7 @@ model Task {
   updated_at        DateTime    @updatedAt
   taskSplits        TaskSplit[]
 
-  user          User           @relation(fields: [house_user_id], references: [id])
+  houseUser          HouseUser     @relation(fields: [house_user_id], references: [id])
   house         House          @relation(fields: [house_id], references: [id])
   taskCategory  TaskCategory   @relation(fields: [task_category_id], references: [id])
   recurringTask RecurringTask? @relation(fields: [recurring_task_id], references: [id]) // Optional relation
