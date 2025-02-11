@@ -40,6 +40,7 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, document);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 =======
     // Swagger initialized
@@ -60,6 +61,9 @@ async function bootstrap() {
 =======
   
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+  
+>>>>>>> 6fccb97 (CREATE TASK ,TASK CATEGORY APIS)
     await app.listen(process.env.PORT ?? 3000);
   }
 }

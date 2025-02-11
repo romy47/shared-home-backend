@@ -26,10 +26,14 @@ import { UserBaseEntity, UserDetailEntity } from '../entities/user.entity';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { UsersService } from '../services/users.service';
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization):src/users/users.controller.ts
 =======
 import { Public } from 'src/guards/auth.guard';
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
+=======
+import { Public } from 'src/guards/auth.guard';
+>>>>>>> 6fccb97 (CREATE TASK ,TASK CATEGORY APIS)
 
 @Controller('users')
 @ApiBearerAuth('access-token')

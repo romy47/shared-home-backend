@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { TaskSplitStatus } from '@prisma/client';
 import { ArrayMinSize, IsArray, IsDateString, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
@@ -75,6 +76,12 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { TaskSplitStatus } from '@prisma/client';
 import { ArrayMinSize, IsArray, IsDateString, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
+=======
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { TaskSplitStatus } from '@prisma/client';
+import { ArrayMinSize, IsArray, IsDateString, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+>>>>>>> 6fccb97 (CREATE TASK ,TASK CATEGORY APIS)
 export class UpdateTaskDto {
     @ApiProperty({ type: 'string', nullable: true })
     @IsOptional()
@@ -131,6 +138,9 @@ export class UpdateTaskSplitDto {
   @IsNotEmpty()
   task_id: number;
 }
+<<<<<<< HEAD
 >>>>>>> e77c486 (CREATE TASK ,TASK CATEGORY APIS)
 =======
 >>>>>>> 67de227 (rebased with dev)
+=======
+>>>>>>> 6fccb97 (CREATE TASK ,TASK CATEGORY APIS)

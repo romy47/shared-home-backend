@@ -7,7 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { TasksModule } from './tasks/tasks.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), DataModule, UsersModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), DataModule, UsersModule, TasksModule],
   controllers: [],
   // Providing the app guard here, ensures the guard is centrally activated for all controllers and, all API endpoints.
   // For making a particular API public put @public() decorator with that endpoint.

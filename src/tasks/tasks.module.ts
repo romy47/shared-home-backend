@@ -4,6 +4,7 @@ import { TasksController } from './tasks.controller';
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { PrismaService } from 'src/data/services/prisma/prisma.service';
 import { PaginationService } from 'src/data/common/pagination-service';
 
@@ -33,5 +34,12 @@ import { PaginationService } from 'src/data/common/pagination-service';
 >>>>>>> f2d6a44 (added pagiantion)
 =======
 >>>>>>> 67de227 (rebased with dev)
+=======
+import { PrismaService } from 'src/data/services/prisma/prisma.service';
+
+@Module({
+  controllers: [TasksController],
+  providers: [TasksService, PrismaService],
+>>>>>>> 6fccb97 (CREATE TASK ,TASK CATEGORY APIS)
 })
 export class TasksModule {}
