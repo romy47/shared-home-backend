@@ -42,6 +42,12 @@ async function bootstrap() {
   
 =======
     // Swagger initialized
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+  // Swagger initialized
+
+  // Initializing nest commander
+  // await CommandFactory.run(AppModule);
 
 >>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
     await app.listen(process.env.PORT ?? 3000);

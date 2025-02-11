@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { TaskSplitStatus } from '@prisma/client';
 import { ArrayMinSize, IsArray, IsDateString, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
@@ -58,3 +59,9 @@ export class UpdateTaskSplitDto {
   @IsNotEmpty()
   task_id: number;
 }
+=======
+import { PartialType } from '@nestjs/swagger';
+import { CreateTaskDto } from './create-task.dto';
+
+export class UpdateTaskDto extends PartialType(CreateTaskDto) {}
+>>>>>>> 07ef766 (rebased with dev)
