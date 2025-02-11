@@ -10,8 +10,7 @@ import { HousesService } from './services/houses.service';
 @Module({
   controllers: [AuthController, UsersController, HousesController],
   imports: [DataModule],
-  providers: [UsersService, AuthService, HousesService],
-  exports: [UsersService, AuthService, HousesService],
-
+  providers: [UsersService, AuthService],
+  exports: [UsersService, AuthService],
 })
 export class UsersModule {}
