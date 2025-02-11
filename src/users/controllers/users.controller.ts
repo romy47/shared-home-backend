@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <<<<<<< HEAD:src/users/controllers/users.controller.ts
 import { Controller, Get, Post, Body, Param, Request } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -17,10 +18,12 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
+=======
+import { Controller, Get, Post, Body, Param, Request } from '@nestjs/common';
+>>>>>>> 10f4f11 (HSA-52: Add role based Authorization for a house)
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserBaseEntity, UserDetailEntity } from '../entities/user.entity';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
-import { AuthGuard, Public } from '../../guards/auth.guard';
 import { UsersService } from '../services/users.service';
 >>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization):src/users/users.controller.ts
 
