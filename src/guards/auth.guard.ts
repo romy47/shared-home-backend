@@ -33,11 +33,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
     console.log(token);
     if (!token) {
-<<<<<<< HEAD
-      throw new UnauthorizedException("token is not valid....");
-=======
       throw new UnauthorizedException();
->>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
     }
     try {
       const payload = await this.firebaseAdminService
@@ -47,11 +43,7 @@ export class AuthGuard implements CanActivate {
       const user = await this.usersService.findOneByAuthId(user_id);
       request['user'] = user;
     } catch {
-<<<<<<< HEAD
-      throw new UnauthorizedException("firebase token validation failed...");
-=======
       throw new UnauthorizedException();
->>>>>>> 18ad784 (HSA-51: Add Auth Guard & Swagger Authorization)
     }
     return true;
   }
