@@ -3,10 +3,10 @@ import { UpdateTaskCategoryDto } from 'src/generated/nestjs-dto/update-taskCateg
 import { PaginationService } from 'src/data/common/pagination-service';
 import { PaginationParams } from 'src/data/common/pagination-metadata';
 import { CreateTaskCategoryDto, CreateTaskDto } from './dto/create-task.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Task, TaskSplitStatus, TaskStatus, User } from '@prisma/client';
 import { PrismaService } from 'src/data/services/prisma/prisma.service';
-import { UpdateTaskDto } from './dto/update-task.dto';
+import { UpdateTaskDto, UpdateTaskSplitDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
