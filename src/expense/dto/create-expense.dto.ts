@@ -38,25 +38,11 @@ export class CreateExpenseDto {
   amount: Prisma.Decimal;
 
   @ApiProperty({
-    type: 'number',
+    type: 'string',
   })
   @IsNotEmpty()
-  @IsNumber()
-  userId: number;
-
-  @ApiProperty({
-    type: 'number',
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  houseId: number;
-
-  @ApiProperty({
-    type: 'number',
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  expenseCategoryId: number;
+  @IsString()
+  expenseCategoryName: string;
 
   @ApiProperty({
     type: 'array',
