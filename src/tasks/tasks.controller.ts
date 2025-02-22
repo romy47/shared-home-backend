@@ -90,6 +90,6 @@ export class TasksController {
 
   @Get('/taskcategory-by-house/:house_id')
   async listByHouse(@Param('house_id') house_id: number) {
-    return this.tasksService.listByTaskCategoryByHouse(house_id);
+    return this.tasksService.listByTaskCategoryByHouse(+house_id);
   }
 }

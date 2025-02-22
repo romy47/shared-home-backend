@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { TaskStatus } from '@prisma/client';
 import {
@@ -9,6 +10,7 @@ import {
   IsNotEmpty,
   IsArray,
   ArrayMinSize,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateTaskDto {
@@ -71,8 +73,19 @@ export class CreateTaskDto {
 }
 
 export class CreateTaskCategoryDto {
+  @ApiProperty({ description: 'ID of the house', example: 1 })
+  @IsNumber()
+  @IsNotEmpty()
   house_id: number;
-  image_id?: number;
+
+  @ApiProperty({ description: 'Optional image ID', example: '12345' ,required: false})
+  @IsOptional()
+  @IsNumber()
+  image_id?: number; 
+
+  @ApiProperty({ description: 'Title of the task category', example: 'Household chores' })
+  @IsString()
+  @IsNotEmpty()
   title: string;
 }
 
