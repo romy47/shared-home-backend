@@ -29,7 +29,6 @@ export class AuthService {
       throw new BadRequestException('User with this email already exists');
     }
 
-    console.log(signupDto);
     const auth = this.firebaseClientService.getAuth();
     const firebaseUser = await createUserWithEmailAndPassword(
       auth,
@@ -37,12 +36,10 @@ export class AuthService {
       signupDto.password,
     )
       .then(async function (userResponse) {
-        console.log('User successfully created:', userResponse.user.uid);
         await sendEmailVerification(userResponse.user);
         return userResponse.user;
       })
       .then(function (user) {
-        console.log('Email verification email successfully sent!');
         return user;
       });
 
