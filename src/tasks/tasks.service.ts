@@ -120,10 +120,19 @@ export class TasksService {
       include: {
         taskCategory: true,
         houseUser: true, //it is the owner,
-        taskSplits: true,
+        taskSplits: {
+          include: {
+            houseUser: {
+              include: {
+                user: true, // Fetch the user details inside houseUser
+              },
+            },
+          },
+        },
+
       },
     });
-
+    console.log('these are the tasks, returned',tasks)
     return tasks;
   }
 
