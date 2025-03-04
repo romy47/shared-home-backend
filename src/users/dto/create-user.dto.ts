@@ -21,15 +21,4 @@ export class CreateUserDto {
     type: 'string',
   })
   auth_id: string;
-  @ApiProperty({
-    type: 'string',
-    nullable: true,
-  })
-  username: string | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
-  birthday: Date | null;
 }

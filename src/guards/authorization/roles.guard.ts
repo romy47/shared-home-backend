@@ -1,8 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from './roles.decorator';
-import { UserRoleEntity } from 'src/users/entities/user.entity';
+import { BaseUserEntity } from 'src/users/entities/user.entity';
 import { HouseRole } from '../types';
+import { HouseRoleEntity } from 'src/users/entities/house-role.entity';
 
 @Injectable()
 export class HouseRolesGuard implements CanActivate {
@@ -23,7 +24,7 @@ export class HouseRolesGuard implements CanActivate {
     const house_id = request.params.house_id;
     const { user } = context.switchToHttp().getRequest();
     return requiredRoles.some((role) => {
-      const house_user: UserRoleEntity = user.house_users.find(
+      const house_user: HouseRoleEntity = user.house_users.find(
         (ur) => ur.house.id == house_id,
       );
       if (!house_user) {

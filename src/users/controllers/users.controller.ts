@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Request } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UserBaseEntity, UserDetailEntity } from '../entities/user.entity';
+import { BaseUserEntity, UserDetailEntity } from '../entities/user.entity';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { UsersService } from '../services/users.service';
 import { Public } from 'src/guards/auth.guard';
@@ -12,11 +12,11 @@ export class UsersController {
 
   @Post()
   @Public()
-  @ApiOkResponse({ type: UserBaseEntity })
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserBaseEntity> {
+  @ApiOkResponse({ type: BaseUserEntity })
+  async create(@Body() createUserDto: CreateUserDto): Promise<BaseUserEntity> {
     console.log(createUserDto);
     const user = await this.usersService.create(createUserDto);
-    return new UserBaseEntity(user);
+    return new BaseUserEntity(user);
   }
 
   @Get(':id')
