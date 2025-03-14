@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { House } from '@prisma/client';
-import { UserRoleEntity } from './user.entity';
+import { UserRoleEntity } from './user-role.entity';
+
 export class BaseHouseEntity implements House {
   @ApiProperty({
     type: 'integer',

@@ -19,7 +19,7 @@ export class UsersService {
     });
 
     if (existingUser) {
-      throw new UnprocessableEntityException('User already exists');
+      return existingUser;
     }
 
     // Create the user
