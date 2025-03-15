@@ -34,6 +34,7 @@ export class TasksController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    console.log('passed id is '+id)
     return this.tasksService.findOne(+id);
   }
 

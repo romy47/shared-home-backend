@@ -264,6 +264,7 @@ model TaskSplit {
 
 enum TaskSplitStatus {
   PENDING
+  IN_PROGRESS
   COMPLETED
 }
 

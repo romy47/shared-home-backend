@@ -137,14 +137,27 @@ export class TasksService {
   }
 
   async findOne(id: number): Promise<TaskDetailDto> {
+    console.log('id is '+id)
     const task = await this.prismaService.task.findUnique({
       where: { id },
       include: {
         house: true,
-        houseUser: true,
         taskCategory: true,
         recurringTask: true,
-        taskSplits: true,
+        taskSplits: {
+          include:{
+            houseUser:{
+              include: {
+                user: true,  // Add this line to include the user details
+              },
+            }
+          }
+        },
+        houseUser: {
+          include: {
+            user: true,  // Add this line to include the user details
+          },
+        },
       },
     });
 
@@ -300,6 +313,7 @@ export class TasksService {
     updateTaskSplitDto: UpdateTaskSplitDto,
     user: User,
   ): Promise<{ message: string }> {
+    console.log('i am called....xxxx')
     return await this.prismaService.$transaction(async (prisma) => {
       const { house_id, task_id, status } = updateTaskSplitDto;
 
